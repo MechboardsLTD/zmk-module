@@ -1,5 +1,5 @@
-#include "my_keyboard-layouts.dtsi"
 #include <dt-bindings/zmk/matrix_transform.h>
+#include "twenty5-layouts.dtsi"
 
 / {
     chosen {
