@@ -1,0 +1,9 @@
+file_format: "1"
+id: twenty5
+name: Twenty5
+type: shield
+url: https://www.mechboards.co.uk/
+requires:
+  - pro_micro
+features:
+  - keys
