@@ -1,0 +1,14 @@
+file_format: "1"
+id: corne_min
+name: Corne Min
+url: https://mechboards.co.uk
+type: board
+arch: arm
+features:
+  - keys
+outputs:
+  - usb
+  - ble
+siblings:
+  - corne_min_left
+  - corne_min_right

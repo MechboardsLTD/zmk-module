@@ -1,0 +1,31 @@
+
+if BOARD_CORNE_MIN_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Corne Min"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+	default y
+
+endif # BOARD_CORNE_MIN_LEFT
+
+
+if BOARD_CORNE_MIN_LEFT || BOARD_CORNE_MIN_RIGHT
+
+config BOARD
+	default "corne_min"
+
+config ZMK_SPLIT
+	default y
+
+config BT_CTLR
+	default BT
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+	default y
+
+endif # USB_DEVICE_STACK
+
+endif # BOARD_CORNE_MIN_LEFT || BOARD_CORNE_MIN_RIGHT
