@@ -18,6 +18,18 @@
         ;
 };
 
+&leds0 {
+    led0: led_0 {
+        gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;  // red LED
+    };
+    led1: led_1 {
+        gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;  // green LED
+    };
+    led2: led_2 {
+        gpios = <&gpio0 3 GPIO_ACTIVE_LOW>;  // blue LED
+    };
+};
+
 &default_transform {
-		col-offset = <6>;
-	};
+	col-offset = <6>;
+};
