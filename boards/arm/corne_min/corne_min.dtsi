@@ -38,6 +38,17 @@
 		status = "okay";
 	};
 
+ 	tp4057_status_pins {
+		compatible = "gpio-keys";
+		charging_state: charging_state0 {
+			gpios = <&gpio0 21 GPIO_ACTIVE_LOW>;
+		};
+		standby_state: standby_state0 {
+			gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+
 
 	default_transform: keymap_transform_0 {
 		compatible = "zmk,matrix-transform";
