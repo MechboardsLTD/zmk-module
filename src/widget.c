@@ -1,5 +1,6 @@
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
+#include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/led.h>
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
@@ -334,6 +335,8 @@ ZMK_LISTENER(led_layer_listener, led_layer_listener_cb);
 ZMK_SUBSCRIPTION(led_layer_listener, zmk_layer_state_changed);
 #endif // SHOW_LAYER_CHANGE
 
+static void show_charging_state(void);
+
 extern void led_process_thread(void *d0, void *d1, void *d2) {
     ARG_UNUSED(d0);
     ARG_UNUSED(d1);
@@ -367,6 +370,7 @@ extern void led_process_thread(void *d0, void *d1, void *d2) {
             LOG_DBG("Got a layer color item from msgq, color %d", blink.color);
             set_rgb_leds(blink.color, 0);
         }
+        show_charging_state();
     }
 }
 
@@ -408,3 +412,102 @@ extern void led_init_thread(void *d0, void *d1, void *d2) {
 // run init thread on boot for initial battery+output checks
 K_THREAD_DEFINE(led_init_tid, 1024, led_init_thread, NULL, NULL, NULL,
                 K_LOWEST_APPLICATION_THREAD_PRIO, 0, 200);
+
+#define CHARGING_NODE DT_NODELABEL(charging_state)
+#define STANDBY_NODE DT_NODELABEL(standby_state)
+
+static const struct gpio_dt_spec charging_gpio =
+    GPIO_DT_SPEC_GET_OR(CHARGING_NODE, gpios, {0});
+static const struct gpio_dt_spec standby_gpio =
+    GPIO_DT_SPEC_GET_OR(STANDBY_NODE, gpios, {0});
+static struct gpio_callback charging_state_cb;
+
+static bool tp4057_initialized = false;
+static volatile bool charging = false;
+static volatile bool standby = false;
+static volatile bool no_battery = false;
+
+// 0"black", 1"red", 2"green", 3"yellow", 4"blue",  5"magenta", 6"cyan",
+// 7"white"
+
+static void show_charging_state(void) {
+  LOG_DBG("standby: %d : charging: %d", standby, charging);
+  if (tp4057_initialized) {
+
+    if (charging && standby) {
+      no_battery = true;
+    }
+
+    if (no_battery) {
+      set_rgb_leds(5, 0);
+      if (!charging || !standby) {
+        no_battery = false;
+      }
+    } else {
+      if (charging) {
+        set_rgb_leds(1, 0);
+      } else if (standby) {
+        set_rgb_leds(2, 0);
+      } else {
+        set_rgb_leds(0, 0);
+      }
+    }
+  }
+}
+
+static void charging_state_handler(const struct device *port,
+                                   struct gpio_callback *cb, uint32_t pins) {
+  standby = gpio_pin_get_dt(&standby_gpio);
+  charging = gpio_pin_get_dt(&charging_gpio);
+  show_charging_state();
+}
+
+extern void tp4057_status_init(void *d0, void *d1, void *d2) {
+  ARG_UNUSED(d0);
+  ARG_UNUSED(d1);
+  ARG_UNUSED(d2);
+
+  LOG_DBG("tp4057_status_init");
+
+  if (!gpio_is_ready_dt(&charging_gpio)) {
+    LOG_ERR("Error: GPIO %s is not ready", charging_gpio.port->name);
+    return;
+  }
+
+  if (gpio_pin_configure_dt(&charging_gpio, GPIO_INPUT | GPIO_PULL_UP) != 0) {
+    LOG_ERR("Failed to configure charging GPIO pin");
+    return;
+  }
+
+  if (gpio_pin_configure_dt(&standby_gpio, GPIO_INPUT | GPIO_PULL_UP) != 0) {
+    LOG_ERR("Failed to configure standby GPIO pin");
+    return;
+  }
+
+  if (gpio_pin_interrupt_configure_dt(&charging_gpio, GPIO_INT_EDGE_BOTH) !=
+      0) {
+    LOG_ERR("Failed to configure charging GPIO interrupt");
+    return;
+  }
+
+  if (gpio_pin_interrupt_configure_dt(&standby_gpio, GPIO_INT_EDGE_RISING) !=
+      0) {
+    LOG_ERR("Failed to configure standby GPIO interrupt");
+    return;
+  }
+
+  gpio_init_callback(&charging_state_cb, charging_state_handler,
+                     BIT(charging_gpio.pin));
+  gpio_add_callback(charging_gpio.port, &charging_state_cb);
+
+  charging = gpio_pin_get_dt(&charging_gpio);
+  standby = gpio_pin_get_dt(&standby_gpio);
+  tp4057_initialized = true;
+
+  show_charging_state();
+
+  LOG_DBG("tp4057_status_init done");
+}
+
+K_THREAD_DEFINE(tp4057_status_init_id, 1024, tp4057_status_init, NULL, NULL,
+                NULL, K_LOWEST_APPLICATION_THREAD_PRIO, 0, 10000);
