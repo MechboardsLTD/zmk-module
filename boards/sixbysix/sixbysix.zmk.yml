@@ -1,0 +1,11 @@
+file_format: "1"
+id: sixbysix
+name: Mechboards Six by Six
+type: board
+arch: arm
+outputs:
+  - usb
+features:
+  - keys
+  - encoder
+url: https://mechboards.co.uk

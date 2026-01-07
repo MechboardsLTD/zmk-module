@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                                                &bootloader 
+                &kp A  &kp B &kp C &kp D  &kp E &kp F
+                &kp A  &kp B &kp C &kp D  &kp E &kp F
+                &kp A  &kp B &kp C &kp D  &kp E &kp F
+                &kp A  &kp B &kp C &kp D  &kp E &kp F
+                &kp A  &kp B &kp C &kp D  &kp E &kp F
+                &kp A  &kp B &kp C &kp D  &kp E &kp F
+            >;
+            sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
+        };
+    };
+};
+
