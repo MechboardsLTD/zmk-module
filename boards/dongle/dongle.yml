@@ -1,0 +1,10 @@
+file_format: "1"
+id: dongle
+name: Mechboards Dongle
+type: board
+arch: arm
+outputs:
+  - usb
+features:
+  - keys
+url: https://mechboards.co.uk

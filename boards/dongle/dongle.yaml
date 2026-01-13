@@ -1,0 +1,16 @@
+identifier: dongle
+name: Mechboards Dongle
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 40
+supported:
+  - switches
+  - usb_device
+  - ble
+  - ieee802154
+  - watchdog
+  - gpio
