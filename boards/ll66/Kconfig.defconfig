@@ -1,7 +1,22 @@
-if SHIELD_LL66
+# Copyright (c) 2020 The ZMK Contributors
+# SPDX-License-Identifier: MIT
 
-# Name must be less than 16 characters long!
-config ZMK_KEYBOARD_NAME
+if BOARD_LL66
+
+config BOARD
     default "ll66"
 
-endif
+config ZMK_KEYBOARD_NAME
+    default "LL66"
+     
+if USB_DEVICE_STACK
+
+config USB_NRFX
+    default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+    default BT
+    
+endif # BOARD_LL66
