@@ -1,5 +1,5 @@
-identifier: sixbysix
-name: Mechboards Six by Six
+identifier: pad
+name: Merzigo Pad
 type: mcu
 arch: arm
 toolchain:

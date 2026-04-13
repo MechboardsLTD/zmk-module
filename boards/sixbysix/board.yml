@@ -1,5 +1,0 @@
-board:
-  name: sixbysix
-  vendor: mechboards
-  socs:
-    - name: nrf52840

@@ -1,0 +1,96 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp SPACE        // play (encoder press)
+                
+                &kp LC(Z)        // Undo
+                &kp I            // Mark in
+                &kp O            // Mark out
+                &kp M            // Mark clip
+                &kp D            // Close gap (custom bind)
+                &kp R            // Ripple delete (custom bind)
+
+                &kp LC(LS(Z))    // redo
+                &kp G            // audio gain
+                &kp LC(N)        // new sequence
+                &kp LC(R)        // speed duration
+                &kp M            // marker
+                &kp RET          // render (custom bind)
+
+                &kp DOWN         // next edit point
+                &kp EQUAL        // zoom in
+                &kp MINUS        // zoom out
+                &kp LS(5)        // effect control
+                &kp LC(S)        // save
+                &kp LS(8)        // media
+
+                &kp UP           // go to previous
+                &kp LS(Z)        // scale to frame (custom bind)
+                &kp LC(K)        // cut
+                &kp LC(C)        // copy
+                &kp LC(V)        // paste
+                &kp LEFT         // step back
+
+                &kp LCTRL        // ctrl
+                &kp UP           // up
+                &kp DOWN         // down
+                &kp L            // forward
+                &kp LS(L)        // fast forward
+                &kp RIGHT        // step forward
+
+                &kp LC(M)        // export
+                &kp SPACE        // play/pause
+                &kp LS(D)        // audio fade (custom bind)
+                &kp LC(I)        // import
+            >;
+            sensor-bindings = <&inc_dec_kp LEFT RIGHT>; // frame scrub
+        };
+        layer_1 {
+            bindings = <
+                                                    &trans 
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans        &trans        &trans &trans
+            >;
+        };
+
+        layer_2 {
+            bindings = <
+                                                    &trans 
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans        &trans        &trans &trans
+            >;
+        };
+
+        layer_3 {
+            bindings = <
+                                                    &trans 
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans &trans &trans &trans &trans &trans
+                &trans        &trans        &trans &trans
+            >;
+        };
+    };
+};

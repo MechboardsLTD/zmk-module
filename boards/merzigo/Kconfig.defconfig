@@ -1,13 +1,13 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if BOARD_SIXBYSIX
+if BOARD_PAD
 
 config BOARD
-    default "sixbysix"
+    default "pad"
 
 config ZMK_KEYBOARD_NAME
-    default "Mechboards 6x6"
+    default "Merzigo Pad"
      
 if USB_DEVICE_STACK
 
@@ -19,4 +19,4 @@ endif # USB_DEVICE_STACK
 config BT_CTLR
     default BT
     
-endif # BOARD_SIXBYSIX
+endif # BOARD_PAD

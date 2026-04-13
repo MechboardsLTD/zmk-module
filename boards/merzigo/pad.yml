@@ -1,6 +1,6 @@
 file_format: "1"
-id: sixbysix
-name: Mechboards Six by Six
+id: pad
+name: Merzigo Pad
 type: board
 arch: arm
 outputs:

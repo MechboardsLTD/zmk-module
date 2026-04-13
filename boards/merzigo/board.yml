@@ -1,0 +1,5 @@
+board:
+  name: pad
+  vendor: merzigo
+  socs:
+    - name: nrf52840
