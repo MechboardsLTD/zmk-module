@@ -512,7 +512,7 @@ extern void tp4057_status_init(void *d0, void *d1, void *d2) {
     return;
   }
 
-  if (gpio_pin_interrupt_configure_dt(&standby_gpio, GPIO_INT_EDGE_RISING) !=
+  if (gpio_pin_interrupt_configure_dt(&standby_gpio, GPIO_INT_EDGE_BOTH) !=
       0) {
     LOG_ERR("Failed to configure standby GPIO interrupt");
     return;
