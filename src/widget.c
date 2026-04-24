@@ -475,6 +475,11 @@ static void charging_state_handler(const struct device *port,
   ARG_UNUSED(cb);
   ARG_UNUSED(pins);
 
+  if (!tp4057_initialized) {
+    return;
+  }
+
+
   charging = gpio_pin_get_dt(&charging_gpio);
   standby  = gpio_pin_get_dt(&standby_gpio);
 
