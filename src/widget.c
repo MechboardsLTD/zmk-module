@@ -357,6 +357,9 @@ ZMK_LISTENER(led_layer_listener, led_layer_listener_cb);
 ZMK_SUBSCRIPTION(led_layer_listener, zmk_layer_state_changed);
 #endif // SHOW_LAYER_CHANGE
 
+static struct k_work_q tp4057_work_q;
+static struct k_work charging_work;
+
 
 extern void led_process_thread(void *d0, void *d1, void *d2) {
     ARG_UNUSED(d0);
@@ -393,6 +396,7 @@ extern void led_process_thread(void *d0, void *d1, void *d2) {
             LOG_DBG("Got a layer color item from msgq, color %d", blink.color);
             set_rgb_leds(blink.color, 0);
         }
+        k_work_submit_to_queue(&tp4057_work_q, &charging_work);
     }
 }
 
@@ -434,90 +438,99 @@ K_THREAD_DEFINE(led_init_tid, 1024, led_init_thread, NULL, NULL, NULL,
                 K_LOWEST_APPLICATION_THREAD_PRIO, 0, 200);
 
 #define CHARGING_NODE DT_NODELABEL(charging_state)
-#define STANDBY_NODE DT_NODELABEL(standby_state)
+#define STANDBY_NODE  DT_NODELABEL(standby_state)
 
 static const struct gpio_dt_spec charging_gpio =
     GPIO_DT_SPEC_GET_OR(CHARGING_NODE, gpios, {0});
 static const struct gpio_dt_spec standby_gpio =
     GPIO_DT_SPEC_GET_OR(STANDBY_NODE, gpios, {0});
 
-static volatile bool charging;
-static volatile bool standby;
+static K_THREAD_STACK_DEFINE(tp4057_stack, 512);
+static atomic_t charging;
+static atomic_t standby;
 static volatile bool tp4057_initialized;
 
-static struct gpio_callback charging_state_cb;
-static struct gpio_callback standby_state_cb;
+static struct gpio_callback charging_cb;
+static struct gpio_callback standby_cb;
 
-static struct k_work charging_work;
 
 static void charging_work_handler(struct k_work *work)
 {
-  ARG_UNUSED(work);
+    ARG_UNUSED(work);
 
-  if (!tp4057_initialized) {
-    return;
-  }
+    if (!tp4057_initialized) {
+        return;
+    }
 
-  if (charging) {
-    set_rgb_leds(1, 0);
-  } else if (standby) {
-    set_rgb_leds(2, 0);
-  } else {
-    set_rgb_leds(0, 0);
-  }
+    bool is_charging = atomic_get(&charging);
+    bool is_standby  = atomic_get(&standby);
+
+    if (is_charging) {
+        set_rgb_leds(1, 0);
+    } else if (is_standby) {
+        set_rgb_leds(2, 0);
+    } else {
+        set_rgb_leds(0, 0);
+    }
 }
 
 static void charging_state_handler(const struct device *port,
                                    struct gpio_callback *cb,
                                    uint32_t pins)
 {
-  ARG_UNUSED(port);
-  ARG_UNUSED(cb);
-  ARG_UNUSED(pins);
+    ARG_UNUSED(port);
+    ARG_UNUSED(cb);
 
-  if (!tp4057_initialized) {
-    return;
-  }
+    if (!tp4057_initialized) {
+        return;
+    }
 
+    if (pins & BIT(charging_gpio.pin)) {
+        atomic_set(&charging, gpio_pin_get_dt(&charging_gpio));
+    }
 
-  charging = gpio_pin_get_dt(&charging_gpio);
-  standby  = gpio_pin_get_dt(&standby_gpio);
+    if (pins & BIT(standby_gpio.pin)) {
+        atomic_set(&standby, gpio_pin_get_dt(&standby_gpio));
+    }
 
-  k_work_submit(&charging_work);
+    k_work_submit_to_queue(&tp4057_work_q, &charging_work);
 }
 
-extern void tp4057_status_init(void *d0, void *d1, void *d2)
+void tp4057_status_init(void)
 {
-  ARG_UNUSED(d0);
-  ARG_UNUSED(d1);
-  ARG_UNUSED(d2);
+    k_work_queue_init(&tp4057_work_q);
 
-  k_work_init(&charging_work, charging_work_handler);
+    k_work_queue_start(&tp4057_work_q,
+                       tp4057_stack,
+                       K_THREAD_STACK_SIZEOF(tp4057_stack),
+                       K_PRIO_COOP(7),
+                       NULL);
 
-  gpio_pin_configure_dt(&charging_gpio, GPIO_INPUT | GPIO_PULL_UP);
-  gpio_pin_configure_dt(&standby_gpio, GPIO_INPUT | GPIO_PULL_UP);
+    k_work_init(&charging_work, charging_work_handler);
 
-  gpio_pin_interrupt_configure_dt(&charging_gpio, GPIO_INT_EDGE_BOTH);
-  gpio_pin_interrupt_configure_dt(&standby_gpio, GPIO_INT_EDGE_BOTH);
+    gpio_pin_configure_dt(&charging_gpio, GPIO_INPUT | GPIO_PULL_UP);
+    gpio_pin_configure_dt(&standby_gpio, GPIO_INPUT | GPIO_PULL_UP);
 
-  gpio_init_callback(&charging_state_cb,
-                     charging_state_handler,
-                     BIT(charging_gpio.pin));
-  gpio_add_callback(charging_gpio.port, &charging_state_cb);
+    gpio_pin_interrupt_configure_dt(&charging_gpio, GPIO_INT_EDGE_BOTH);
+    gpio_pin_interrupt_configure_dt(&standby_gpio, GPIO_INT_EDGE_BOTH);
 
-  gpio_init_callback(&standby_state_cb,
-                     charging_state_handler,
-                     BIT(standby_gpio.pin));
-  gpio_add_callback(standby_gpio.port, &standby_state_cb);
+    gpio_init_callback(&charging_cb,
+                       charging_state_handler,
+                       BIT(charging_gpio.pin));
+    gpio_add_callback(charging_gpio.port, &charging_cb);
 
-  charging = gpio_pin_get_dt(&charging_gpio);
-  standby  = gpio_pin_get_dt(&standby_gpio);
+    gpio_init_callback(&standby_cb,
+                       charging_state_handler,
+                       BIT(standby_gpio.pin));
+    gpio_add_callback(standby_gpio.port, &standby_cb);
 
-  tp4057_initialized = true;
+    atomic_set(&charging, gpio_pin_get_dt(&charging_gpio));
+    atomic_set(&standby, gpio_pin_get_dt(&standby_gpio));
 
-  k_work_submit(&charging_work);
+    tp4057_initialized = true;
+
+    k_work_submit_to_queue(&tp4057_work_q, &charging_work);
 }
-
 K_THREAD_DEFINE(tp4057_status_init_id,
                 1024,
                 tp4057_status_init,
