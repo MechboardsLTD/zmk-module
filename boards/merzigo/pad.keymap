@@ -6,6 +6,7 @@
 
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
 
 / {
     keymap {
@@ -13,14 +14,14 @@
 
         default_layer {
             bindings = <
-                &kp SPACE        // play (encoder press)
+                &kp SPACE         // play (encoder press)
                 
-                &kp LC(Z)        // Undo
-                &kp I            // Mark in
-                &kp O            // Mark out
-                &kp M            // Mark clip
-                &kp D            // Close gap (custom bind)
-                &kp R            // Ripple delete (custom bind)
+                &kp LC(Z)         // Undo
+                &kp I             // Mark in
+                &kp O             // Mark out
+                &kp X             // Mark clip
+                &kp LC(LS(LA(G))) // Close gap (custom bind)
+                &kp LS(DEL)       // Ripple delete (custom bind)
 
                 &kp LC(LS(Z))    // redo
                 &kp G            // audio gain
@@ -34,24 +35,24 @@
                 &kp MINUS        // zoom out
                 &kp LS(5)        // effect control
                 &kp LC(S)        // save
-                &kp LS(8)        // media
+                &kp LC(M)        // media
 
-                &kp UP           // go to previous
-                &kp LS(Z)        // scale to frame (custom bind)
-                &kp LC(K)        // cut
-                &kp LC(C)        // copy
-                &kp LC(V)        // paste
-                &kp LEFT         // step back
+                &kp UP            // go to previous
+                &kp LC(LS(LA(S))) // scale to frame (custom bind)
+                &kp LC(X)         // cut
+                &kp LC(C)         // copy
+                &kp LC(V)         // paste
+                &kp LEFT          // step back
 
                 &kp LCTRL        // ctrl
-                &kp UP           // up
-                &kp DOWN         // down
-                &kp L            // forward
-                &kp LS(L)        // fast forward
+                &kp LBKT         // decrease volume clip
+                &kp RBKT         // increase volume clip
+                &kp L            // shuffle right
+                &kp LS(L)        // shuffle slow right
                 &kp RIGHT        // step forward
 
                 &kp LC(M)        // export
-                &kp SPACE        // play/pause
+                &lt 1 SPACE        // play/pause
                 &kp LS(D)        // audio fade (custom bind)
                 &kp LC(I)        // import
             >;
@@ -60,12 +61,12 @@
         layer_1 {
             bindings = <
                                                     &trans 
+                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &trans
                 &trans &trans &trans &trans &trans &trans
                 &trans &trans &trans &trans &trans &trans
                 &trans &trans &trans &trans &trans &trans
                 &trans &trans &trans &trans &trans &trans
-                &trans &trans &trans &trans &trans &trans
-                &trans        &trans        &trans &trans
+                &bt BT_CLR        &trans        &trans &bt BT_CLR_ALL
             >;
         };
 
