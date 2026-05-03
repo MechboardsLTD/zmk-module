@@ -1,0 +1,9 @@
+# Copyright (c) 2026
+# SPDX-License-Identifier: MIT
+
+if SHIELD_MICROPAD
+
+config ZMK_KEYBOARD_NAME
+    default "Micro Pad"
+
+endif
