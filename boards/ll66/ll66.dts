@@ -42,8 +42,11 @@
         blue_led: led_2 {
             gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
         };
-        caps_lock_led: caps_lock_led {
-            gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+        // caps_lock_led: caps_lock_led {
+        //     gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+        // };
+        status_led: status_led {
+             gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
         };
     };
 
@@ -51,16 +54,17 @@
         led-red = &red_led;
         led-green = &green_led;
         led-blue = &blue_led;
+        led-status = &status_led;
     };
 
-    indicators {
-        compatible = "zmk,indicator-leds";
+    // indicators {
+    //     compatible = "zmk,indicator-leds";
 
-        caps_lock_indicator: caps_lock {
-            indicator = <HID_INDICATOR_CAPS_LOCK>;
-            leds = <&caps_lock_led>;
-        };
-    };
+    //     caps_lock_indicator: caps_lock {
+    //         indicator = <HID_INDICATOR_CAPS_LOCK>;
+    //         leds = <&caps_lock_led>;
+    //     };
+    // };
 
     kscan0: kscan0 {
         compatible = "zmk,kscan-gpio-matrix";

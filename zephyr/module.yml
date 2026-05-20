@@ -1,4 +1,5 @@
 name: zmk-keyboard-ll66
 build:
+  cmake: .
   settings:
     board_root: .
