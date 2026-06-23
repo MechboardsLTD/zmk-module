@@ -1,0 +1,15 @@
+file_format: "1"
+id: lily58
+name: Lily58 R2G W
+url: https://mechboards.co.uk
+type: board
+arch: arm
+features:
+  - keys
+  - studio
+outputs:
+  - usb
+  - ble
+siblings:
+  - lily58_left
+  - lily58_right

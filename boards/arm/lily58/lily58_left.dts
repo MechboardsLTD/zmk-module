@@ -1,0 +1,32 @@
+#include "lily58.dtsi"
+
+&kscan0 {
+    row-gpios
+        = <&gpio0 28 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
+
+    col-gpios
+        = <&gpio0 26 GPIO_ACTIVE_HIGH>
+        , <&gpio0 6 GPIO_ACTIVE_HIGH>
+        , <&gpio0 8 GPIO_ACTIVE_HIGH>
+        , <&gpio0 27 GPIO_ACTIVE_HIGH>
+        , <&gpio0 11 GPIO_ACTIVE_HIGH>
+        , <&gpio0 25 GPIO_ACTIVE_HIGH>
+        ;
+};
+
+&leds0 {
+    led0: led_0 {
+        gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;  // red LED
+    };
+    led1: led_1 {
+        gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;  // green LED
+    };
+    led2: led_2 {
+        gpios = <&gpio1 13 GPIO_ACTIVE_LOW>;  // blue LED
+    };
+};
