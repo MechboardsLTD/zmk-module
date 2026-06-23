@@ -9,6 +9,23 @@
 #include <dt-bindings/zmk/bt.h>
 
 / {
+    behaviors {
+        copyp: copy_paste {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LC(C)>, <&kp LC(V)>;
+            mods = <MOD_LCTL>;
+        };
+        unredo: undo_redo {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LC(Z)>, <&kp LC(LS(V))>;
+            mods = <MOD_LCTL>;
+        };
+    };
+};
+
+/ {
     keymap {
         compatible = "zmk,keymap";
 
@@ -16,57 +33,57 @@
             bindings = <
                 &kp SPACE         // play (encoder press)
                 
-                &kp LC(Z)         // Undo
-                &kp I             // Mark in
-                &kp O             // Mark out
-                &kp X             // Mark clip
-                &kp LC(LS(LA(G))) // Close gap (custom bind)
-                &kp LS(DEL)       // Ripple delete (custom bind)
+                &kp ESC
+                &kp LC(LS(LS(L)))
+                &kp LS(D)
+                &kp LC(LS(N6))
+                &kp LC(LA(LS(N5)))
+                &kp LA(LS(M))
 
-                &kp LC(LS(Z))    // redo
-                &kp G            // audio gain
-                &kp LC(N)        // new sequence
-                &kp LC(R)        // speed duration
-                &kp M            // marker
-                &kp RET          // render (custom bind)
+                &kp LC(LS(N7))
+                &kp LC(LS(N9))
+                &kp LC(LS(N8))
+                &kp LC(LS(D))
+                &kp LC(LS(L))
+                &kp LC(T)
 
-                &kp DOWN         // next edit point
-                &kp EQUAL        // zoom in
-                &kp MINUS        // zoom out
-                &kp LS(5)        // effect control
-                &kp LC(S)        // save
-                &kp LC(M)        // media
+                &kp LC(N1)
+                &kp LC(LS(B))
+                &kp LC(LS(E))
+                &kp LC(LA(LS(N3)))
+                &kp LC(LA(LS(P)))
+                &kp LC(LA(LS(N3)))
 
-                &kp UP            // go to previous
-                &kp LC(LS(LA(S))) // scale to frame (custom bind)
-                &kp LC(X)         // cut
-                &kp LC(C)         // copy
-                &kp LC(V)         // paste
-                &kp LEFT          // step back
+                &kp LC(N)
+                &kp RBKT
+                &copyp
+                &kp LC((LS(I)))
+                &kp LEFT
+                &kp LC(LA(I))
 
-                &kp LCTRL        // ctrl
-                &kp LBKT         // decrease volume clip
-                &kp RBKT         // increase volume clip
-                &kp L            // shuffle right
-                &kp LS(L)        // shuffle slow right
-                &kp RIGHT        // step forward
+                &kp LC(LA(LS(END)))
+                &kp LS(RBKT)
+                &kp LC(LA(LS(H)))
+                &unredo
+                &kp RIGHT
+                &kp LC(LS(LA(A)))
 
-                &kp LC(M)        // export
-                &lt 1 SPACE        // play/pause
-                &kp LS(D)        // audio fade (custom bind)
-                &kp LC(I)        // import
+                &kp SPACE
+                &lt 3 LC(X)
+                &kp LC(LA(LS(N0)))
+                &kp LCTRL
             >;
             sensor-bindings = <&inc_dec_kp LEFT RIGHT>; // frame scrub
         };
         layer_1 {
             bindings = <
                                                     &trans 
-                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &trans
-                &trans &trans &trans &trans &trans &trans
-                &trans &trans &trans &trans &trans &trans
-                &trans &trans &trans &trans &trans &trans
-                &trans &trans &trans &trans &trans &trans
-                &bt BT_CLR        &trans        &trans &bt BT_CLR_ALL
+                &trans &trans &trans    &trans &trans &trans
+                &trans &trans &trans    &trans &trans &trans
+                &trans &trans &trans    &trans &trans &trans
+                &trans &trans &kp LC(V) &trans &trans &trans
+                &trans &trans &trans    &trans &trans &trans
+                &trans        &trans            &trans &trans
             >;
         };
 
@@ -85,12 +102,12 @@
         layer_3 {
             bindings = <
                                                     &trans 
+                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &trans
                 &trans &trans &trans &trans &trans &trans
                 &trans &trans &trans &trans &trans &trans
                 &trans &trans &trans &trans &trans &trans
                 &trans &trans &trans &trans &trans &trans
-                &trans &trans &trans &trans &trans &trans
-                &trans        &trans        &trans &trans
+                &bt BT_CLR        &trans        &trans &bt BT_CLR_ALL
             >;
         };
     };

@@ -1,0 +1,1 @@
+target_sources(app PRIVATE src/ble_name_with_id.c)
