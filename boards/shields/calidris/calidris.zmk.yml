@@ -1,0 +1,11 @@
+file_format: "1"
+id: calidris
+name: Calidris
+type: shield
+url: https://www.printables.com/model/1561460-calidris-keyboard
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - calidris_left
+  - calidris_right
