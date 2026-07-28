@@ -10,6 +10,9 @@ endif
 
 if SHIELD_CALIDRIS_LEFT || SHIELD_CALIDRIS_RIGHT
 
+config ZMK_SLEEP
+    default y
+
 config ZMK_SPLIT
     default y
 
