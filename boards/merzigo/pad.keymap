@@ -19,7 +19,7 @@
         unredo: undo_redo {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
-            bindings = <&kp LC(Z)>, <&kp LC(LS(V))>;
+            bindings = <&kp LC(Z)>, <&kp LC(LS(Z))>;
             mods = <MOD_LCTL>;
         };
     };
